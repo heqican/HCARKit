@@ -131,13 +131,33 @@
 //            //将3D模型添加到捕捉到的节点上（此时如果将模型设置有颜色，就可以看到3D长方体模型）
 //            [node addChildNode:planeNode];
             
-            //创建3D模型场景(将自定义模型展现出来)
-            SCNScene *scene = [SCNScene sceneNamed:@"art.scnassets/vase/vase.scn"];
+            
+//            /**
+//             *  1、加载.scn模型
+//             */
+//            //创建3D模型场景(将自定义模型展现出来)
+//            SCNScene *scene = [SCNScene sceneNamed:@"art.scnassets/vase/vase.scn"];
+//            //获取模型节点
+//            //一个场景有多个节点，所有场景有且只有一个根节点
+//            SCNNode *modelNode = scene.rootNode.childNodes.firstObject;
+//            //设置模型节点的位置为捕捉到平底的位置（默认为相机位置）
+//            modelNode.position = SCNVector3Make(planeAnchor.center.x, -10, planeAnchor.center.z);
+//            modelNode.scale = SCNVector3Make(0.01, 0.01, 0.01);
+//            //将自定义模型节点添加到捕捉到的节点上
+//            [node addChildNode:modelNode];
+            
+            
+            /**
+             *  2、加载.dae模型
+             */
+            SCNScene *scene = [SCNScene sceneWithURL:[[NSBundle mainBundle] URLForResource:@"skinning" withExtension:@".dae"] options:nil error:nil];
+            
             //获取模型节点
             //一个场景有多个节点，所有场景有且只有一个根节点
-            SCNNode *modelNode = scene.rootNode.childNodes.firstObject;
+            SCNNode *modelNode = scene.rootNode.childNodes[1];
             //设置模型节点的位置为捕捉到平底的位置（默认为相机位置）
-            modelNode.position = SCNVector3Make(planeAnchor.center.x, 0, planeAnchor.center.z);
+            modelNode.position = SCNVector3Make(planeAnchor.center.x, planeAnchor.center.y-5, planeAnchor.center.z-5);
+            modelNode.scale = SCNVector3Make(0.001, 0.001, 0.001);
             //将自定义模型节点添加到捕捉到的节点上
             [node addChildNode:modelNode];
         }
@@ -240,6 +260,7 @@
     if (!_sceneView) {
         _sceneView = [[ARSCNView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height)];
         _sceneView.delegate = self;
+        _sceneView.allowsCameraControl = YES;//对模型随意的进行操作
     }
     return _sceneView;
 }
